@@ -10,7 +10,7 @@ DATE_NOW="$(date +'%a')"
 echo "Starting Backup Database"
 # MySQL settings
 mysql_user="root"
-mysql_password="T@mth4n1324"
+mysql_password=""
 # Check MySQL password
 echo exit | mysql --user=${mysql_user} --password=${mysql_password} -B 2>/dev/null
 if [ "$?" -gt 0 ]; then
