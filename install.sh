@@ -1,14 +1,18 @@
-yum -y install nano
-yum -y install zip
-yum -y install unzip
-yum -y install epel-release
+ipaddr=$(hostname -I)
+
+yum -y install nano zip unzip wget epel-release
 #Remi repository
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 #nginx repository
-echo "install nginx"
-rpm -Uvh http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm;
-yum --enablerepo=remi,remi-php70 install -y nginx php-fpm php-common
-yum --enablerepo=remi,remi-php70 install -y php-opcache php-pecl-apcu php-cli php-pear php-pdo php-mysqlnd php-pgsql php-pecl-mongo php-pecl-sqlite php-pecl-memcache php-pecl-memcached php-gd php-mbstring php-mcrypt php-xml
+echo "install nginx-----------------------------------------------------"
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm -y
+yum install yum-utils -y
+yum install -y nginx
+yum-config-manager --enable remi-php72
+#yum --enablerepo=remi,remi-php72 install -y nginx php-fpm php-common
+#yum --enablerepo=remi,remi-php72 install -y php-opcache php-pecl-apcu php-cli php-pear php-pdo php-mysqlnd php-pgsql php-gd php-mbstring php-mcrypt php-xml
+yum install -y php php-mcrypt php-cli php-gd php-curl php-mysql php-ldap php-zip php-fileinfo php-mbstring php-xml php-pdo php-pear
 service httpd stop
 service nginx start
 service php-fpm start
@@ -19,25 +23,27 @@ chkconfig --add php-fpm
 chkconfig --levels 235 php-fpm on
 #copy nginx default confd
 yes | cp -rf /install/nginx/default.conf /etc/nginx/conf.d/default.conf
+sed -i "example.com = $ipaddr" /etc/nginx/conf.d/default.conf
 #end file content
 service nginx restart
 #thay group = nginx;user=nginx
 sed -i 's/user = apache/user = nginx/g' /etc/php-fpm.d/www.conf
 sed -i 's/group = apache/group = nginx/g' /etc/php-fpm.d/www.conf
 
-yum update;
-echo "Cai MariaDB"
+yum update -y
+echo "Cai MariaDB-----------------------------------------------------"
 #cai mariadb link sau https://www.tecmint.com/install-mariadb-in-centos-6/
-cp /install/mysql/mariadb.repo /etc/yum.repos.d/MariaDB.repo
-yum install MariaDB-server MariaDB-client -y
-yum install -y MariaDB MariaDB-server
+yes | cp -rf /install/mysql/mariadb.repo /etc/yum.repos.d/MariaDB.repo
+#cai dependencies
+yum install boost-devel -y
+yum install -y mariadb mariadb-server
 service mysql start
 chkconfig --levels 235 mysql on
 /usr/bin/mysql_secure_installation
 
 #cai phpmyadmin
 mkdir /home/pma1
-cp /install/phpmyadmin.zip /home/pma1
+yes | cp -rf /install/phpmyadmin.zip /home/pma1
 unzip /home/pma1/phpmyadmin.zip
 mv /home/phpmyadmin/* /home/pma1/
 #thay doi noi luu session trong /etc/php.ini
