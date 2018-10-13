@@ -1,7 +1,7 @@
-yum install git -y\n
-cd /\n
-mkdir install\n
-cd install\n
-git clone https://github.com/hixbotay/centos.git .\n
-chmod +x install.sh\n
-/install/install.sh\n
+yum install git -y<br>
+cd /<br>
+mkdir install<br>
+cd install<br>
+git clone https://github.com/hixbotay/centos.git .<br>
+chmod +x install.sh<br>
+/install/install.sh<br>
