@@ -112,9 +112,20 @@ service sshd restart
 
 #cai gui mail
 echo "cai gui mail"
+yum install sendmail sendmail-cf
+vim /etc/mail/sendmail.mc
+#change DAEMON_OPTIONS(`Port=smtp,Addr=127.0.0.1, Name=MTA')dnl
+#change LOCAL_DOMAIN(`yourhostname.com')dnl
+make -C /etc/mail
+service sendmail restart
+vim /etc/sysconfig/network
+vim /etc/hosts
+#$ hostname
+
 chmod 1777 /var/mail
 chmod 1777 /var/tmp
 setsebool -P httpd_can_sendmail=on
+
 
 #insall rar optional
 #wget https://www.rarlab.com/rar/rarlinux-x64-5.5.0.tar.gz
